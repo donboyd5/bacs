@@ -2,6 +2,7 @@
 
 export(acstabs_wide)
 export(enhance)
+export(find_acstab)
 export(get_acstab)
 export(get_enhanced)
 export(read_acstab)

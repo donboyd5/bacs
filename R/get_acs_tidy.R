@@ -132,7 +132,25 @@ acstabs_wide <- function(years){
     dplyr::filter(year %in% years) |>
     dplyr::select(table, title, universe, year, n) |>
     dplyr::arrange(year) |>
-    dplyr::pivot_wider(names_from = year, values_from = n)
+    tidyr::pivot_wider(names_from = year, values_from = n)
+}
+
+
+#' Find ACS tables containing a given term
+#'
+#' @param searchterm String to search for in the `title` field of `tabs`.
+#' @param tabs Tibble that contains field `title`.
+#'
+#' @return Tibble with the resulting table information.
+#' @export
+#'
+#' @examples
+#' find_acstab("age")
+#' find_acstab("age", acstabs_wide(c(2011, 2016, 2021)))
+find_acstab <- function(searchterm, tabs=bacs::acstabs){
+  tabs |>
+    dplyr::filter(stringr::str_detect(stringr::str_to_upper(title),
+                                      stringr::str_to_upper(searchterm)))
 }
 
 
