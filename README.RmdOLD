@@ -1,0 +1,142 @@
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# bacs
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+`bacs` provides tools I use to work with the American Community Survey
+(ACS).
+
+At present, it only works with the 2021 5-year ACS.
+
+`bacs` takes advantage of a [new format the Census Bureau has created
+for the 2021 5-year
+ACS](https://www.census.gov/programs-surveys/acs/data/summary-file.html)
+and future ACS’s that is much easier to work with than prior formats.
+The new format puts each ACS Table into its own delimited file with a
+geographic identifier (GEO_ID) plus all variables (estimates and margins
+of error) as columns, and ALL geographies as rows. It then makes these
+table-specific files [available
+individually](https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/)
+and also wraps all tables into a single zip file of about 11gb. The new
+format has its [own
+wiki](https://github.com/uscensusbureau/acs-summary-file/wiki).
+
+The Census Bureau is considering reformatting prior-year ACS files to
+this format.
+
+This format is very fast and it is practical to read whole tables
+directly from the web on the fly rather than downloading the full zip
+file, although I have not implemented direct-from-web reading in this
+package (yet). The package assumes you have downloaded the full zip
+file.
+
+## Functions
+
+`bacs` has the following functions:
+
+- `read_acs_tab` – read a full table directly from the zip file (all
+  records for all geographies in the U.S.)
+- `save_tabny` - read a full table from the zip file, and
+  - filter it to get the geographies I typically am most interested in:
+
+    - U.S. total record, and an urban and rural summary record (3
+      records)
+
+    - State total records for all states (including DC and PR) (52
+      records)
+
+    - New York records for all:
+
+      - Urban areas and rural areas (just 2 records – a summary record
+        for urban and a summary record for rural)
+
+      - Counties (including NYC boroughs)
+
+      - County subdivisions (generally towns and cities, including NYC)
+
+      - Places (generally cities (again), villages, and CDPs)
+
+      - School districts
+
+  - enhance the file by:
+
+    - assigning a primary county to each place, based on the share of
+      place population in each county, where a place crosses county
+      lines
+
+    - creating a short name for each geographic area
+- `read_tabny` - reads a file created by `save_tabny`
+
+The functions above all can accept an argument, `xdacs` (external
+directory for ACS), that defines where the zip file is saved and where
+the tables created by `save_tabny` are saved.
+
+## Data
+
+`bacs` has 3 included data files:
+
+- `acstables` - all table numbers, titles, and universes
+
+- `acsvars` - all variables, their labels, and the corresponding table
+  number, title, and universe
+
+- `xwalkny` - for all of the geographies above, includes all Census
+  geographic information from the Census file
+  [Geos20215YR.txt](https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/documentation/Geos20215YR.txt),
+  plus the primary county for NY places (based on population), and
+  certain name-related variables.
+
+## Installation
+
+You can install the development version of bacs from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("donboyd5/bacs")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+``` r
+library(bacs)
+library(tidyverse)
+#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+#> ✔ ggplot2 3.4.1     ✔ purrr   1.0.1
+#> ✔ tibble  3.1.8     ✔ dplyr   1.1.0
+#> ✔ tidyr   1.3.0     ✔ stringr 1.5.0
+#> ✔ readr   2.1.4     ✔ forcats 1.0.0
+#> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+#> ✖ dplyr::filter() masks stats::filter()
+#> ✖ dplyr::lag()    masks stats::lag()
+## basic example code
+
+# get population table B01003 for all geographies in the United States
+df <- read_acstab("B01003")
+#> Rows: 621296 Columns: 3
+#> ── Column specification ────────────────────────────────────────────────────────
+#> Delimiter: "|"
+#> chr (1): GEO_ID
+#> dbl (2): B01003_E001, B01003_M001
+#> 
+#> ℹ Use `spec()` to retrieve the full column specification for this data.
+#> ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+# save just the U.S., state, and New York records of interest, with enhanced geography information to b01001.rds
+save_tabny("B01001", overwrite = TRUE)
+#> [1] "Getting and saving... b01001.rds"
+#> Rows: 621296 Columns: 99
+#> ── Column specification ────────────────────────────────────────────────────────
+#> Delimiter: "|"
+#> chr  (1): GEO_ID
+#> dbl (98): B01001_E001, B01001_M001, B01001_E002, B01001_M002, B01001_E003, B...
+#> 
+#> ℹ Use `spec()` to retrieve the full column specification for this data.
+#> ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+#> NULL
+```
+
