@@ -3,7 +3,7 @@
 #'
 #' @param tabname Census Bureau name for the table (e.g., B01001) as a string.
 #'
-#' @return Tibble with the full data for the ACS table.
+#' @returns Tibble with the full data for the ACS table.
 #' @export
 #'
 #' @examples
@@ -79,7 +79,7 @@ get_acstab <- function(tabname, year=2021) {
 #'
 #' @param df Census Bureau name for the table (e.g., B01001) as a string.
 #'
-#' @return Tibble with the full data for the ACS table.
+#' @returns Tibble with the full data for the ACS table.
 #' @export
 #'
 #' @examples
@@ -107,7 +107,7 @@ enhance <- function(df){
 #'
 #' @param tabname Census Bureau name for the table (e.g., B01001) as a string.
 #'
-#' @return Tibble with the full data for the ACS table.
+#' @returns Tibble with the full data for the ACS table.
 #' @export
 #'
 #' @examples
@@ -122,7 +122,7 @@ get_enhanced <- function(tabname){
 #'
 #' @param years
 #'
-#' @return Tibble with tables as rows, years as columns, # of variables as cells.
+#' @returns Tibble with tables as rows, years as columns, # of variables as cells.
 #' @export
 #'
 #' @examples
@@ -141,7 +141,7 @@ acstabs_wide <- function(years){
 #' @param searchterm String to search for in the `title` field of `tabs`.
 #' @param tabs Tibble that contains field `title`.
 #'
-#' @return Tibble with the resulting table information.
+#' @returns Tibble with the resulting table information.
 #' @export
 #'
 #' @examples
