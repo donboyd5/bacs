@@ -1,11 +1,19 @@
 # https://r-pkgs.org/whole-game.html
 
+
+
+# setup -------------------------------------------------------------------
+
 library(devtools)
 library(usethis)
 source(here::here("data-raw", "libraries.r"))
 library(bacs)
 # load(here::here("R", "sysdata.rda"))
-load("R/sysdata.rda")
+# load("R/sysdata.rda")
+
+
+
+# miscellaneous techniques ------------------------------------------------
 
 # use_r("strsplit1")
 # load_all()

@@ -6,7 +6,7 @@
 \title{ACS variables metadata}
 \format{
 Tibble with 1 row per ACS variable, with columns table, line, variable, label, release, year, title, universe,
-uvariable, where uvariable is a uniform variable name (experiemental) that puts an underscore in names from early years,
+uvariable, where uvariable is a uniform variable name (experimental) that puts an underscore in names from early years,
 which do not have underscores.
 }
 \source{

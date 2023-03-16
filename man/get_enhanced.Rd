@@ -4,10 +4,12 @@
 \alias{get_enhanced}
 \title{Get and enhance a single ACS table and return the full table for geographies of interest}
 \usage{
-get_enhanced(tabname)
+get_enhanced(tabname, year = 2021)
 }
 \arguments{
 \item{tabname}{Census Bureau name for the table (e.g., B01001) as a string.}
+
+\item{year}{4-digit numeric value, must be a 5-year ACS endyear, default 2021}
 }
 \value{
 Tibble with the full data for the ACS table.

@@ -18,9 +18,33 @@
 #'
 #' @format
 #' Tibble with 1 row per ACS variable, with columns table, line, variable, label, release, year, title, universe,
-#' uvariable, where uvariable is a uniform variable name (experiemental) that puts an underscore in names from early years,
+#' uvariable, where uvariable is a uniform variable name (experimental) that puts an underscore in names from early years,
 #' which do not have underscores.
 #'
 #' @examples
 #' acsvars
 "acsvars"
+
+#' Geometry data for areas of interest
+#'
+#' @source Constructed using tidycensus
+#'
+#' @format
+#' Tibble with 1 row per area, with affgeoid, geoid, fullname, and geomery.
+#'
+#' @examples
+#' geometry
+"geometry"
+
+#' Geographic identification variables for areas of interest
+#'
+#' @source Constructed using tidycensus
+#'
+#' @format
+#' Tibble with 1 row per area, with affgeoid, geoid, fullname, and many other identification variables.
+#'
+#' @examples
+#' xwalk
+"xwalk"
+
+

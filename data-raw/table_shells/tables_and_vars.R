@@ -42,7 +42,7 @@ xdshells <- r"(E:\data\acs\sf\table_shells)"
 # bacs:::default_xdacs
 
 
-# download all shells -----------------------------------------------------
+# define urls for shells -----------------------------------------------------
 # https://www2.census.gov/programs-surveys/acs/summary_file/2020/documentation/user_tools/ACS2020_Table_Shells.xlsx
 
 url1 <- "https://www2.census.gov/programs-surveys/acs/summary_file/"
@@ -71,6 +71,8 @@ urls <- c("https://www2.census.gov/programs-surveys/acs/summary_file/2021/sequen
 # urls5 <- urls[str_detect(urls, "3_year", negate = TRUE)]; (urls5 <- urls5[str_detect(urls5, "1_year", negate = TRUE)])
 # path_file(urls5)
 
+
+# ONETIME - download all shells -----------------------------------------------------
 urls
 for(url in urls){
   print(url)
@@ -107,6 +109,7 @@ pathy <- function(fpath){
 # pathy(fpaths) |> sort()
 
 fget <- function(fpath, year, sheet){
+  # get all the shell information
   year <- pathy(fpath)
   print(year)
 
@@ -160,7 +163,7 @@ usethis::use_data(acsvars, overwrite = TRUE)
 
 # create acstabs long ----
 acstabs <- acsvars |>
-  summarise(n=n(), .by=c(table, year, title, universe))
+  summarise(nvars=n(), .by=c(table, year, title, universe))
 usethis::use_data(acstabs, overwrite = TRUE)
 
 
