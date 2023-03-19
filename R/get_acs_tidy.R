@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' df <- get_acstab("B01003")
-get_acstab <- function(tabname, year=2021, geometry=TRUE) {
+get_acstab <- function(tabname, year=2021, geometry=FALSE) {
 
   if(year <= 2014 & geometry==TRUE) {
     msg <- paste0("Resetting geometry to FALSE for years <= 2014. Year: ", year)
@@ -122,13 +122,14 @@ get_acstab <- function(tabname, year=2021, geometry=TRUE) {
 #' df2 <- enhance(df1)
 enhance <- function(tabdf, year=2021){
   tabdf2 <- tabdf |>
-    dplyr::select(-name, -dataset) |>
-    dplyr::left_join(bacs::xwalkny |>
-                dplyr::select(affgeoid, fullname, shortname, shortestname, geotype, nygeotype,
-                       stabbr, county, countyname),
-              by = join_by(affgeoid)) |>
-    dplyr::select(affgeoid, geoid, fullname, shortname, shortestname, geotype, nygeotype,
-           stabbr, county, countyname, everything()) |>
+    dplyr::select(-c(geoid, fullname, geotype, dataset)) |>
+    dplyr::left_join(bacs::xwalk |>
+                dplyr::select(affgeoid, geoid, year, stabbr,
+                              fullname, shortname, shortestname, geotype, nygeotype,
+                              countyfp, countyname),
+              by = join_by(affgeoid, year)) |>
+    dplyr::select(affgeoid, geoid, stabbr, fullname, shortname, shortestname, geotype, nygeotype,
+           countyfp, countyname, everything()) |>
     # tidycensus apparently has already made variable names uniform so use uvariable (my uniform variable)
     #   rather than variable as given in census documentation
     dplyr::left_join(bacs::acsvars |> select(variable=uvariable, line, label, year, title, universe),

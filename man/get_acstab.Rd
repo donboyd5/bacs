@@ -4,7 +4,7 @@
 \alias{get_acstab}
 \title{Read a single ACS table and return the full table for geographies of interest}
 \usage{
-get_acstab(tabname, year = 2021, geometry = TRUE)
+get_acstab(tabname, year = 2021, geometry = FALSE)
 }
 \arguments{
 \item{tabname}{Census Bureau name for the table (e.g., B01001) as a string.}

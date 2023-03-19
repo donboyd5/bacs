@@ -1,7 +1,4 @@
 
-
-
-
 #' Check for label mismatches across years
 #'
 #' Examine multiple years for an ACS table and find instances where the label for

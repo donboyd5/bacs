@@ -5,6 +5,10 @@
 # setup -------------------------------------------------------------------
 
 library(devtools)
+# periodically do the following for test driving:
+#  modify a function
+#  load_all()
+
 library(usethis)
 source(here::here("data-raw", "libraries.r"))
 library(bacs)
