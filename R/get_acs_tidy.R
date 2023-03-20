@@ -85,18 +85,18 @@ get_acstab <- function(tabname, year=2021, geometry=FALSE) {
 
   if("NAME" %in% colnames(stack1)) {
     stack2 <- stack1 |>
-      rename(fullname=NAME)
+      dplyr::rename(fullname=NAME)
   } else {
     stack2 <- stack1 |>
-      mutate(fullname=NA_character_)
+      dplyr::renamemutate(fullname=NA_character_)
   } # has fullname, no longer has NAME
 
   if("NAME.y" %in% colnames(stack2)) {
     stack3 <- stack2 |>
-      mutate(fullname=ifelse(is.na(fullname),
+      dplyr::renamemutate(fullname=ifelse(is.na(fullname),
                              NAME.y,
                              fullname)) |>
-      select(-NAME.x, -NAME.y)
+      dplyr::renameselect(-NAME.x, -NAME.y)
   } else stack3 <- stack2
 
   stack4 <- stack3 |>
@@ -106,7 +106,6 @@ get_acstab <- function(tabname, year=2021, geometry=FALSE) {
 
   stack4
 }
-
 
 
 #' Enhance a single ACS table and return the full table for geographies of interest
@@ -120,20 +119,34 @@ get_acstab <- function(tabname, year=2021, geometry=FALSE) {
 #' @examples
 #' df1 <- get_acstab("B01001")
 #' df2 <- enhance(df1)
-enhance <- function(tabdf, year=2021){
+enhance <- function(tabdf){
+  # what years are available in xwalk?
+  year <- tabdf |> dplyr::pull(year) |> unique()
+  years <- bacs::xwalk |> dplyr::pull(year) |> unique()
+  if(year %in% years){
+    exwalk <- bacs::xwalk |>
+      dplyr::filter(year==!!year) |>
+      dplyr::select(-year)
+  } else{
+    exwalk <- bacs::xwalk |>
+      dplyr::filter(year==2021) |> # TODO: pick closest subsequent year, instead of 2021
+      dplyr::select(-year)
+  }
+
   tabdf2 <- tabdf |>
     dplyr::select(-c(geoid, fullname, geotype, dataset)) |>
-    dplyr::left_join(bacs::xwalk |>
-                dplyr::select(affgeoid, geoid, year, stabbr,
+    dplyr::left_join(exwalk |>
+                dplyr::select(affgeoid, geoid, stabbr,
                               fullname, shortname, shortestname, geotype, nygeotype,
                               countyfp, countyname),
-              by = join_by(affgeoid, year)) |>
+              by = dplyr::join_by(affgeoid)) |>
     dplyr::select(affgeoid, geoid, stabbr, fullname, shortname, shortestname, geotype, nygeotype,
            countyfp, countyname, everything()) |>
     # tidycensus apparently has already made variable names uniform so use uvariable (my uniform variable)
     #   rather than variable as given in census documentation
-    dplyr::left_join(bacs::acsvars |> select(variable=uvariable, line, label, year, title, universe),
-              by = join_by(variable, year)) |>
+    dplyr::left_join(bacs::acsvars |>
+                       dplyr::select(variable=uvariable, line, label, year, title, universe),
+              by = dplyr::join_by(variable, year)) |>
     dplyr::relocate(line, label, .after=variable)
   tabdf2
 }
@@ -149,7 +162,8 @@ enhance <- function(tabdf, year=2021){
 #'
 #' @examples
 #' df2 <- get_enhanced("B01003")
-get_enhanced <- function(tabname, year=2021){
+#' df3 <- get_enhanced("B01003", year=2019)
+get_enhanced <- function(tabname, year){
   tabdf <- get_acstab(tabname, year=year)
   enhance(tabdf)
 }
